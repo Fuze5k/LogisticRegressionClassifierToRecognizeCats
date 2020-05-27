@@ -12,6 +12,7 @@ class Helper:
         b = 0
         return w, b
 
+class Logic:
     def forward_and_backward_propagate(w, b, X, Y):
         m = X.shape[1]
         A = sigmoid(np.dot(w.T,X) + b)
@@ -21,6 +22,7 @@ class Helper:
         cost = np.squeeze(cost)
         grads = {"dw": dw,"db": db}
         return grads, cost
+
 
 def load_dataset():
     train_dataset = h5py.File('dataset/train_catvnoncat.h5', "r")
