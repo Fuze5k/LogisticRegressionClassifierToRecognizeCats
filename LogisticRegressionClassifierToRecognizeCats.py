@@ -4,6 +4,12 @@ import h5py
 #import scipy
 #from PIL import Image
 
+class Helper:
+    def sigmoid(self, f):
+        return 1/(1+np.exp(-f))
+
+
+
 def load_dataset():
     train_dataset = h5py.File('dataset/train_catvnoncat.h5', "r")
     train_set_x_orig = np.array(train_dataset["train_set_x"][:])
