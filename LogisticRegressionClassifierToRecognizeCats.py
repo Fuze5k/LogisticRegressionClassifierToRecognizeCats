@@ -79,5 +79,5 @@ image = image / 255.
 my_image = resize(image,(num_px,num_px)).reshape((1, num_px * num_px * 3)).T
 my_predicted_image = logic.predict(w,b, my_image)
 
-matplotlib.pyplot.imshow(image)
+PIL.Image.open(fname).show()
 print("It is cat on: " + str(np.squeeze(my_predicted_image)*100) + "%")
