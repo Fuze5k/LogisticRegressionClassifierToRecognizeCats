@@ -1,8 +1,6 @@
 import numpy as np
 import matplotlib.pyplot
 import h5py
-import PIL
-import scipy.misc
 from skimage.transform import resize
 class Helper:
     def sigmoid(self, f):
@@ -37,20 +35,17 @@ class Logic:
 
     def predict(self, w, b, X):
         m = X.shape[1]
-        Y_p = np.zeros((1,m))
         w = w.reshape(X.shape[0], 1)
         A = self.helper.sigmoid(np.dot(w.T,X) + b)
-        for i in range(A.shape[1]):
-                Y_p[0,i] = A[0,i]
-
-        return Y_p
+        
+        return A
    
 
-    def training(self, X_train, Y_train, num_iterations=2000, learning_rate=0.5, print_cost=False):
+    def training(self, X_train, Y_train, num_iterations=2000, learning_rate=0.5):
         w, b = self.helper.initialize_w_and_b(X_train.shape[0])
-        w,b = self.optimize(w, b, X_train, Y_train, num_iterations, learning_rate)
+        w_train,b_train = self.optimize(w, b, X_train, Y_train, num_iterations, learning_rate)
         
-        return w,b
+        return w_train,b_train
 
 
 def load_dataset():
@@ -70,14 +65,13 @@ train_set_x = train_set_x_flatten / 255.
 num_px = train_set_x_orig.shape[1]
 
 logic = Logic()
-w,b = logic.training(train_set_x, train_set_y,2000, 0.005)
+w_train,b_train = logic.training(train_set_x, train_set_y,2000, 0.005)
 
 
-fname = "images/my_image.jpg"
+fname = "images/cat1.jpg"
 image = np.array(matplotlib.pyplot.imread(fname))
 image = image / 255.
 my_image = resize(image,(num_px,num_px)).reshape((1, num_px * num_px * 3)).T
-my_predicted_image = logic.predict(w,b, my_image)
+my_predicted_image = logic.predict(w_train,b_train, my_image)
 
-PIL.Image.open(fname).show()
 print("It is cat on: " + str(np.squeeze(my_predicted_image)*100) + "%")
