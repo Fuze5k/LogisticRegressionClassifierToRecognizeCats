@@ -21,6 +21,19 @@ class Logic:
         grads = {"dw": dw,"db": db}
         return grads
 
+    def optimize(w, b, X, Y, k_iterations, step_learning):
+
+        for i in range(k_iterations):
+            grads = forward_and_backward_propagate(w,b,X,Y)
+            dw = grads["dw"]
+            db = grads["db"]
+            w = w - step_learning * dw
+            b = b - step_learning * db
+
+        params = {"w": w,"b": b}
+        grads = {"dw": dw,"db": db}
+    
+        return params, grads
 
 def load_dataset():
     train_dataset = h5py.File('dataset/train_catvnoncat.h5', "r")
