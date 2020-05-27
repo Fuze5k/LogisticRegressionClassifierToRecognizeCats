@@ -1,8 +1,9 @@
 import numpy as np
-import matplotlib.pyplot as plt
+import matplotlib.pyplot
 import h5py
-#import scipy
-#from PIL import Image
+import PIL
+import scipy.misc
+from skimage.transform import resize
 class Helper:
     def sigmoid(self, f):
         return 1 / (1 + np.exp(-f))
@@ -13,9 +14,12 @@ class Helper:
         return w, b
 
 class Logic:
+    def __init__(self):
+        self.helper = Helper()
+
     def forward_and_backward_propagate(self, w, b, X, Y):
         m = X.shape[1]
-        A = sigmoid(np.dot(w.T,X) + b)
+        A = self.helper.sigmoid(np.dot(w.T,X) + b)
         dw = (1 / m) * np.dot(X,(A - Y).T)
         db = (1 / m) * np.sum(A - Y,axis=1)
         grads = {"dw": dw,"db": db}
@@ -24,7 +28,7 @@ class Logic:
     def optimize(self, w, b, X, Y, k_iterations, step_learning):
 
         for i in range(k_iterations):
-            grads = forward_and_backward_propagate(w,b,X,Y)
+            grads = self.forward_and_backward_propagate(w,b,X,Y)
             dw = grads["dw"]
             db = grads["db"]
             w = w - step_learning * dw
@@ -35,23 +39,21 @@ class Logic:
     
         return params, grads
 
-    def predict(w, b, X):
+    def predict(self, w, b, X):
         m = X.shape[1]
         Y_p = np.zeros((1,m))
         w = w.reshape(X.shape[0], 1)
 
-        A = sigmoid(np.dot(w.T,X) + b)
+        A = self.helper.sigmoid(np.dot(w.T,X) + b)
    
         for i in range(A.shape[1]):
-            if A[0,i] < 0.5:
-                Y_prediction[0,i] = 0
-            else:
-                Y_prediction[0,i] = 1
-        return Y_prediction
+                Y_p[0,i] = A[0,i]
+
+        return Y_p
    
-    def training(X_train, Y_train, num_iterations=2000, learning_rate=0.5, print_cost=False):
-        w, b = initialize_with_zeros(X_train.shape[0])
-        parameters, grads = optimize(w, b, X_train, Y_train, num_iterations, learning_rate)
+    def training(self, X_train, Y_train, num_iterations=2000, learning_rate=0.5, print_cost=False):
+        w, b = self.helper.initialize_w_and_b(X_train.shape[0])
+        parameters, grads = self.optimize(w, b, X_train, Y_train, num_iterations, learning_rate)
         w = parameters["w"]
         b = parameters["b"]
         return w,b
@@ -71,5 +73,17 @@ train_set_x_flatten = train_set_x_orig.reshape(train_set_x_orig.shape[0],-1).T
 
 train_set_x = train_set_x_flatten / 255.
 
+num_px = train_set_x_orig.shape[1]
+
+logic = Logic();
+w,b= logic.training(train_set_x, train_set_y,2000, 0.005)
 
 
+fname = "images/my_image.jpg"
+image = np.array(matplotlib.pyplot.imread(fname))
+image = image / 255.
+my_image = resize(image,(num_px,num_px)).reshape((1, num_px * num_px * 3)).T
+my_predicted_image = logic.predict(w,b, my_image)
+
+matplotlib.pyplot.imshow(image)
+print("It is cat on: " + str(np.squeeze(my_predicted_image)*100) + "%")
