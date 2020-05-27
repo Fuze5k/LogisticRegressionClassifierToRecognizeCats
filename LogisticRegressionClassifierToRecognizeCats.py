@@ -65,10 +65,11 @@ train_set_x = train_set_x_flatten / 255.
 num_px = train_set_x_orig.shape[1]
 
 logic = Logic()
-w_train,b_train = logic.training(train_set_x, train_set_y,2000, 0.005)
+w_train,b_train = logic.training(train_set_x, train_set_y,1000, 0.1)
+#w_train,b_train = logic.training(train_set_x, train_set_y,2000, 0.05)
 
 
-fname = "images/cat1.jpg"
+fname = "images/cat3.jpg"
 image = np.array(matplotlib.pyplot.imread(fname))
 image = image / 255.
 my_image = resize(image,(num_px,num_px)).reshape((1, num_px * num_px * 3)).T
