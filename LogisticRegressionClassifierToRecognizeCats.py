@@ -16,12 +16,10 @@ class Logic:
     def forward_and_backward_propagate(w, b, X, Y):
         m = X.shape[1]
         A = sigmoid(np.dot(w.T,X) + b)
-        cost = (-1 / m) * (np.sum(Y * np.log(A) + (1 - Y) * np.log(1 - A),axis=1))
         dw = (1 / m) * np.dot(X,(A - Y).T)
         db = (1 / m) * np.sum(A - Y,axis=1)
-        cost = np.squeeze(cost)
         grads = {"dw": dw,"db": db}
-        return grads, cost
+        return grads
 
 
 def load_dataset():
