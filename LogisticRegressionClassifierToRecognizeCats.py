@@ -12,3 +12,9 @@ def load_dataset():
     return train_set_x_orig, train_set_y_orig
 
 train_set_x_orig, train_set_y = load_dataset()
+
+train_set_x_flatten = train_set_x_orig.reshape(train_set_x_orig.shape[0],-1).T
+
+
+
+
