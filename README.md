@@ -6,7 +6,7 @@
 + в теці images розмістити фотографіїї для перевірки
 + Запустити LogisticRegressionClassifierToRecognizeCats.py
 ## Example program response
-!https://github.com/Fuze5k/Images/blob/master/LogisticRegressionClassifierToRecognizeCats/example1.png
+![](https://github.com/Fuze5k/Images/blob/master/LogisticRegressionClassifierToRecognizeCats/example1.png)
 ## Note
 З інтернету був взятий лише тренувальний набор даних, все інше писалось самостійно, попередню вивчивши дану тематику.
 Бібліотека numpy використовуються для векторизації набору даних та для зручної роботи з матрицями, фактично заміняє вкладені цикли for, а також пришвидшує виконання коду приблизно в 300 разів ніж це булоб реалізовано за допомогою циклів.
