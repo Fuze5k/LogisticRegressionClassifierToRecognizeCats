@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot
 import h5py
+import os
 from skimage.transform import resize
 class Helper:
     def sigmoid(self, f):
@@ -69,10 +70,11 @@ w_train,b_train = logic.training(train_set_x, train_set_y,1000, 0.1)
 #w_train,b_train = logic.training(train_set_x, train_set_y,2000, 0.05)
 
 
-fname = "images/cat3.jpg"
-image = np.array(matplotlib.pyplot.imread(fname))
-image = image / 255.
-my_image = resize(image,(num_px,num_px)).reshape((1, num_px * num_px * 3)).T
-my_predicted_image = logic.predict(w_train,b_train, my_image)
-
-print("It is cat on: " + str(np.squeeze(my_predicted_image)*100) + "%")
+directory = "images"
+files = os.listdir(directory)
+for file in files:
+    image = np.array(matplotlib.pyplot.imread(directory+"/"+file))
+    image = image / 255.
+    my_image = resize(image,(num_px,num_px)).reshape((1, num_px * num_px * 3)).T
+    my_predicted_image = logic.predict(w_train,b_train, my_image)
+    print(str(file)+"cat on: " + str(np.squeeze(my_predicted_image)*100) + "%")
