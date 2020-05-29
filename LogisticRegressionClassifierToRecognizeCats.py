@@ -3,6 +3,7 @@ import matplotlib.pyplot
 import h5py
 import os
 from skimage.transform import resize
+import _pickle  as pickle
 class Helper:
     def sigmoid(self, f):
         return 1 / (1 + np.exp(-f))
@@ -50,19 +51,30 @@ def load_dataset():
     return train_set_x_orig, train_set_y_orig
 
 
-train_set_x_orig, train_set_y = load_dataset()
-train_set_x_flatten = train_set_x_orig.reshape(train_set_x_orig.shape[0],-1).T
-train_set_x = train_set_x_flatten / 255.
-num_px = train_set_x_orig.shape[1]
-
 logic = Logic()
-w_train,b_train = logic.training(train_set_x, train_set_y,1000, 0.1)
+data = dict(w_train=0,b_train=0,num_px=0)
+make_train = input("train logistick regresiom y/n: ")
+if make_train == "y":
+    num_iterations = int(input("num iterations: "))
+    learning_rate = int(input("learning rate: "))
+    train_set_x_orig, train_set_y = load_dataset()
+    train_set_x_flatten = train_set_x_orig.reshape(train_set_x_orig.shape[0],-1).T
+    train_set_x = train_set_x_flatten / 255.
+    data[3] = train_set_x_orig.shape[1]
+    data[1],data[2] = logic.training(train_set_x, train_set_y, num_iterations, learning_rate)
+    output = open('train_data.pkl', 'wb')
+    pickle.dump(data, output)
+    output.close()
+else:
+    input = open('train_data.pkl', 'rb')
+    data = pickle.load(input)
+    input.close()
 
 directory = "images"
 files = os.listdir(directory)
 for file in files:
-    image = np.array(matplotlib.pyplot.imread(directory+"/"+file))
+    image = np.array(matplotlib.pyplot.imread(directory + "/" + file))
     image = image / 255.
-    my_image = resize(image,(num_px,num_px)).reshape((1, num_px * num_px * 3)).T
-    my_predicted_image = logic.predict(w_train,b_train, my_image)
-    print(str(file)+" cat on: " + str(np.squeeze(my_predicted_image)*100) + "%")
+    my_image = resize(image,(data[3],data[3])).reshape((1, data[3] * data[3] * 3)).T
+    my_predicted_image = logic.predict(data[1],data[2], my_image)
+    print(str(file) + " cat on: " + str(np.squeeze(my_predicted_image) * 100) + "%")
