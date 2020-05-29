@@ -37,7 +37,7 @@ class Logic:
         A = self.helper.sigmoid(np.dot(w.T,X) + b)
         return A
 
-    def training(self, X_train, Y_train, num_iterations=2000, learning_rate=0.5):
+    def training(self, X_train, Y_train, num_iterations=2000, learning_rate=0.05):
         w, b = self.helper.initialize_w_and_b(X_train.shape[0])
         w_train,b_train = self.optimize(w, b, X_train, Y_train, num_iterations, learning_rate)
         return w_train,b_train
@@ -55,8 +55,8 @@ logic = Logic()
 data = dict(w_train=0,b_train=0,num_px=0)
 make_train = input("train logistick regresiom y/n: ")
 if make_train == "y":
-    num_iterations = int(input("num iterations: "))
-    learning_rate = int(input("learning rate: "))
+    num_iterations = int(input("num iterations(default 1000): "))
+    learning_rate = float(input("learning rate(default 0.1): "))
     train_set_x_orig, train_set_y = load_dataset()
     train_set_x_flatten = train_set_x_orig.reshape(train_set_x_orig.shape[0],-1).T
     train_set_x = train_set_x_flatten / 255.
