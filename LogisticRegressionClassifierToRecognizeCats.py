@@ -4,6 +4,7 @@ import h5py
 import os
 from skimage.transform import resize
 import _pickle  as pickle
+import asyncio
 class Helper:
     def sigmoid(self, f):
         return 1 / (1 + np.exp(-f))
@@ -17,16 +18,16 @@ class Logic:
     def __init__(self):
         self.helper = Helper()
 
-    def forward_and_backward_propagate(self, w, b, X, Y):
+    async def forward_and_backward_propagate(self, w, b, X, Y):
         m = X.shape[1]
         A = self.helper.sigmoid(np.dot(w.T,X) + b)
         dw = (1 / m) * np.dot(X,(A - Y).T)
         db = (1 / m) * np.sum(A - Y,axis=1)
         return dw,db
 
-    def optimize(self, w, b, X, Y, k_iterations, step_learning):
+    async def optimize(self, w, b, X, Y, k_iterations, step_learning):
         for i in range(k_iterations):
-            dw,db = self.forward_and_backward_propagate(w,b,X,Y)
+            dw,db = await asyncio.create_task(self.forward_and_backward_propagate(w,b,X,Y))
             w = w - step_learning * dw
             b = b - step_learning * db
         return w,b
@@ -39,7 +40,7 @@ class Logic:
 
     def training(self, X_train, Y_train, num_iterations=2000, learning_rate=0.05):
         w, b = self.helper.initialize_w_and_b(X_train.shape[0])
-        w_train,b_train = self.optimize(w, b, X_train, Y_train, num_iterations, learning_rate)
+        w_train,b_train = asyncio.run(self.optimize(w, b, X_train, Y_train, num_iterations, learning_rate))
         return w_train,b_train
 
 
