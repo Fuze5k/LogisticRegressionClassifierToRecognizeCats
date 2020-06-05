@@ -83,3 +83,4 @@ def answer(file):
     print(str(file) + " cat on: " + str(np.squeeze(my_predicted_image) * 100) + "%")
 for file in files:
     start_new_thread(answer,(file,))
+
