@@ -5,6 +5,7 @@ import os
 from skimage.transform import resize
 import _pickle  as pickle
 import asyncio
+from _thread import start_new_thread
 class Helper:
     def sigmoid(self, f):
         return 1 / (1 + np.exp(-f))
@@ -73,9 +74,12 @@ else:
 
 directory = "images"
 files = os.listdir(directory)
-for file in files:
+
+def answer(file):
     image = np.array(matplotlib.pyplot.imread(directory + "/" + file))
     image = image / 255.
     my_image = resize(image,(data[3],data[3])).reshape((1, data[3] * data[3] * 3)).T
     my_predicted_image = logic.predict(data[1],data[2], my_image)
     print(str(file) + " cat on: " + str(np.squeeze(my_predicted_image) * 100) + "%")
+for file in files:
+    start_new_thread(answer,(file,))
